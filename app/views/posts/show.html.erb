@@ -13,5 +13,13 @@
   <hr/>
 </p>
 
+<%= form_for [@post, @comment] do |f| %>
+  <div class='control-group' >
+    <%= f.label :body, 'Leave a comment' %>
+    <%= f.text_area :body, rows: 3 %>
+  </div>
+  <%= f.submit('Create Commment', class: 'btn btn-primary') %>
+<% end %>
+
 <h4> Comments: </h4>
 <%= render @post.comments %>

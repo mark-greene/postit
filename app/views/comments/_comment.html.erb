@@ -5,7 +5,7 @@
     </p>
     <p>
       <span class='quiet'>by</span> <%= comment.creator.username %>
-      <small> at <%= comment.created_at.strftime('%a %d %b %Y %r %Z') %> </small>
+      <small> at <%= format_timestamp(comment.created_at) %> </small>
     </p>
   </div>
 </div>
