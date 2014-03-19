@@ -1,5 +1,6 @@
 <div class='well' >
   <%= form_for @user do |f| %>
+    <%= render 'shared/errors', errors: @user.errors %>
     <div class='control-group' >
       <%= f.label :username %>
       <%= f.text_field :username %>
