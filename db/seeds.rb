@@ -1,7 +1,7 @@
 # This file should contain all the record creation needed to seed the database with its default values.
 # The data can then be loaded with the rake db:seed (or created alongside the db with db:setup).
 #
-User.create( [{username: "Mark"}, {username: "Fred"}, {username: "Bob"}] )
+User.create( [{username: "Mark", password: "mark"}, {username: "Fred", password: "fred"}, {username: "Bob", password: "bob"}] )
 Category.create( [{name: "First"}, {name: "Second"}, {name: "Third"}] )
 Post.create(url: "google.com", title: "My first post", description: "This is my first post", creator: User.first ).category_ids = [1, 2]
 Post.create(url: "cnn.com", title: "My second post", description: "This is my second post", creator: User.first ).category_ids = [2, 3]
