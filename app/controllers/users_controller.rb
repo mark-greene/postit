@@ -1,8 +1,8 @@
 class UsersController < ApplicationController
   before_action :set_user, only: [:show, :edit, :update]
+  before_action :require_same_user, only: [:edit, :update]
 
   def show
-
   end
 
   def new
@@ -28,7 +28,7 @@ class UsersController < ApplicationController
   def  update
   if @user.update user_params
     flash[:notice] = "Your profile was successfully updated"
-    redirect_to root_path
+    redirect_to user_path(@user)
   else
     render :edit
   end
@@ -46,6 +46,13 @@ private
 
   def set_user
     @user = User.find(params[:id])
+  end
+
+  def require_same_user
+    if current_user != @user
+      flash[:error] = "Access denied for user #{current_user.username}"
+      redirect_to root_path
+    end
   end
 
 end
