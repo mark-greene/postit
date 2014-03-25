@@ -1,3 +1,4 @@
+<!-- if logged_in? && (current_user == @post.creator || current_user.admin?) -->
 <% if logged_in? %>
   <p class='pull-right'>
     [<%= link_to 'Edit this post', edit_post_path(@post) %>]
