@@ -58,7 +58,7 @@ private
   end
 
   def set_post
-    @post = Post.find(params[:id])
+    @post = Post.find_by slug: params[:id]
   end
 
   def require_creator
