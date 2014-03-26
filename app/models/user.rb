@@ -42,7 +42,7 @@ class User < ActiveRecord::Base
     the_slug = str.strip
     the_slug.gsub! /\s*[^A-Za-z0-9]\s*/, '-'
     the_slug.gsub! /-+/, '-'
-    the_slug.downcase!
+    the_slug.downcase
   end
 
 end
