@@ -31,4 +31,4 @@
 <% end %>
 
 <h4> Comments: </h4>
-<%= render @post.comments %>
+<%= render @post.comments.all.sort_by{|x| x.total_votes}.reverse %>
