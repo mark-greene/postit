@@ -21,11 +21,13 @@
 </ul>
 
 <% if params[:tab].nil? %>
-  <% @user.posts.each do |post| %>
+  <% posts = @user.posts.all.sort_by{|x| x.total_votes}.reverse %>
+  <% posts.each do |post| %>
     <%= render 'posts/post', post: post %>
   <% end %>
 <% else %>
-  <% @user.comments.each do |comment| %>
+  <% comments = @user.comments.all.sort_by{|x| x.total_votes}.reverse %>
+  <% comments.each do |comment| %>
     <%= render 'comments/comment', comment: comment, show_post: true %>
   <% end %>
 <% end %>
