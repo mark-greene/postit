@@ -13,8 +13,7 @@ class SessionsController < ApplicationController
         user.generate_pin!
         errors = user.send_pin_to_phone
         if errors.any?
-          flash[:error] = "Something is wrong with your phone number. Your pin was not sent."
-          redirect_to login_path
+          redirect_to login_path, alert: "Something is wrong with your phone number. Your pin was not sent."
         else
           redirect_to pin_path
         end
@@ -22,15 +21,13 @@ class SessionsController < ApplicationController
         login_user!(user)
       end
     else
-      flash[:error] = "Something is wrong with your username or password"
-      redirect_to login_path
+      redirect_to login_path, alert: "Something is wrong with your username or password"
     end
   end
 
   def destroy
     session[:user_id] = nil
-    flash[:notice] = "You've logged out"
-    redirect_to root_path
+    redirect_to root_path, notice: "You've logged out"
   end
 
   def pin
@@ -52,8 +49,7 @@ private
 
   def login_user!(user)
     session[:user_id] = user.id
-    flash[:notice] = "Welcome, you are logged in"
-    redirect_to root_path
+    redirect_to root_path, notice: "Welcome, you are logged in"
   end
 
 end
