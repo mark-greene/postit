@@ -9,6 +9,7 @@ class User < ActiveRecord::Base
 
   validates  :username, presence: true, uniqueness: true
   validates :password, presence: true, on: :create, length: {minimum: 3}
+  validates :phone,  length: {is: 10}
 
   sluggable_column :username
 
@@ -33,8 +34,10 @@ class User < ActiveRecord::Base
     account_sid = 'AC3c5a2f84053ad8fcf3495a7a79509cfe'
     auth_token = '9bfa93784a99020d230137b8cd36c9ca'
     client = Twilio::REST::Client.new account_sid, auth_token
-
-    msg = "Please enter #{self.pin} to login."
-    client.account.messages.create(body: msg, to: self.phone, from: "+15029473801")
+    begin
+      msg = "Please enter #{self.pin} to login."
+      client.account.messages.create(body: msg, to: self.phone, from: "+15029473801")
+    rescue Twilio::REST::RequestError
+    end
   end
 end

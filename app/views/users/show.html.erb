@@ -5,7 +5,7 @@
     <dt>Username:</dt>
     <dd> <%= @user.username %> </dd>
     <dt>Phone:</dt>
-    <dd> <%= @user.phone %> </dd>
+    <dd> <%= @user.phone.blank? ? "</br>".html_safe : @user.phone%> </dd>
     <dt>Timezone:</dt>
     <dd><%= @user.timezone %></dd>
   </dl>
