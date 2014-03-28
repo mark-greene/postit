@@ -11,30 +11,28 @@ module Sluggable
   end
 
   def generate_slug!
-    the_slug = slugify self.send(self.class.slug_column.to_sym)
-    obj = self.class.find_by slug: the_slug
+    str = slugify self.send(self.class.slug_column.to_sym)
     count = 2
+    obj = self.class.where(slug: str).first
     while obj && obj != self
-      the_slug = append_suffix the_slug, count
-      obj = self.class.find_by slug: the_slug
+      str = str + "-" + count.to_s
+      obj = self.class.where(slug: str).first
       count += 1
     end
-    self.slug = the_slug
+    self.slug = str
   end
 
-  def append_suffix str, count
-    if str.split('-').last.to_i != 0
-      return str.split('-').slice(0...-1).join('-') + '-' + count.to_s
-    else
-      return str + '-' + count.to_s
-    end
-  end
+  def slugify name
+    str = name.strip
 
-  def slugify str
-    the_slug = str.strip
-    the_slug.gsub! /\s*[^A-Za-z0-9]\s*/, '-'
-    the_slug.gsub! /-+/, '-'
-    the_slug.downcase!
+    str.gsub! /['`]/,""
+    str.gsub! /\s*@\s*/, " at "
+    str.gsub! /\s*&\s*/, " and "
+    str.gsub! /\s*[^A-Za-z0-9]\s*/, '-'
+    str.gsub! /-+/, '-'
+    str.gsub! /\A[-\.]+|[-\.]+\z/,""
+
+    str.downcase
   end
 
   module ClassMethods

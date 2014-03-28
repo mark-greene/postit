@@ -41,7 +41,7 @@ end
 private
 
   def user_params
-    params.require(:user).permit(:username, :password, :timezone)
+    params.require(:user).permit(:username, :password, :phone, :timezone)
   end
 
   def set_user
