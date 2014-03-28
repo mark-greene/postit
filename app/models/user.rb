@@ -33,11 +33,15 @@ class User < ActiveRecord::Base
     # Get your Account Sid and Auth Token from twilio.com/user/account
     account_sid = 'AC3c5a2f84053ad8fcf3495a7a79509cfe'
     auth_token = '9bfa93784a99020d230137b8cd36c9ca'
+    errors = []
     client = Twilio::REST::Client.new account_sid, auth_token
     begin
       msg = "Please enter #{self.pin} to login."
       client.account.messages.create(body: msg, to: self.phone, from: "+15029473801")
     rescue Twilio::REST::RequestError
+      errors << $!.message
     end
+    errors
   end
+
 end

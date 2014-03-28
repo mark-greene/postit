@@ -11,8 +11,13 @@ class SessionsController < ApplicationController
       if user.two_factor_auth?
         session[:two_factor] = true
         user.generate_pin!
-        user.send_pin_to_phone
-        redirect_to pin_path
+        errors = user.send_pin_to_phone
+        if errors.any?
+          flash[:error] = "Something is wrong with your phone number. Your pin was not sent."
+          redirect_to login_path
+        else
+          redirect_to pin_path
+        end
       else
         login_user!(user)
       end
