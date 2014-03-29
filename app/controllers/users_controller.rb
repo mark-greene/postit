@@ -14,20 +14,13 @@ class UsersController < ApplicationController
 
     if @user.save
       session[:user_id] = @user.id
+
       if @user.phone.blank?
         redirect_to root_path, notice: "Welcome #{@user.username}, you are registered"
       else
-        session[:two_factor] = true
-        @user.generate_pin!
-        errors = @user.send_pin_to_phone
-        if !errors.any?
-          redirect_to pin_path
-        else
-          @user.phone = nil
-          flash[:error] = "Something is wrong with your phone number"
-          render :new
-        end
+        render :new if !valid_phone?
       end
+
     else
       render :new
     end
@@ -43,16 +36,7 @@ class UsersController < ApplicationController
       if @user.phone.blank?
         redirect_to user_path(@user), notice: "Your profile was successfully updated"
       else
-        session[:two_factor] = true
-        @user.generate_pin!
-        errors = @user.send_pin_to_phone
-        if !errors.any?
-          redirect_to pin_path
-        else
-          @user.phone = nil
-          flash[:error] = "Something is wrong with your phone number"
-          render :edit
-        end
+        render :edit if !valid_phone?
       end
 
     else
@@ -79,6 +63,22 @@ private
     if current_user != @user
       redirect_to root_path ,alert:  "Access denied for user #{current_user.username}"
     end
+  end
+
+  def valid_phone?
+    valid = true
+    session[:two_factor] = true
+    @user.generate_pin!
+    errors = @user.send_pin_to_phone
+    if !errors.any?
+      redirect_to pin_path
+    else
+      valid = false
+      @user.remove_pin!
+      @user.phone = nil
+      flash[:error] = "Something is wrong with your phone number"
+    end
+    valid
   end
 
 end

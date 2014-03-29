@@ -5,8 +5,10 @@
     <dt>Username:</dt>
     <dd> <%= @user.username %> </dd>
     <dt>Phone:</dt>
-    <dd> <%= @user.phone.blank? ? "</br>".html_safe : @user.phone%> </dd>
-    <dt>Timezone:</dt>
+    <dd> <%= @user.two_factor_auth? ? @user.phone : "</br>".html_safe  %></dd>
+    <dt>Two Factor Auth:</dt>
+    <dd> <%= @user.two_factor_auth? ? "ON" : "OFF" %> </dd>
+    <dt>Time Zone:</dt>
     <dd><%= @user.timezone %></dd>
   </dl>
 </div>
