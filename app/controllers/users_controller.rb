@@ -14,8 +14,20 @@ class UsersController < ApplicationController
 
     if @user.save
       session[:user_id] = @user.id
-      flash[:notice] = "Welcome #{@user.username}, you are registered"
-      redirect_to root_path
+      if @user.phone.blank?
+        redirect_to root_path, notice: "Welcome #{@user.username}, you are registered"
+      else
+        session[:two_factor] = true
+        @user.generate_pin!
+        errors = @user.send_pin_to_phone
+        if !errors.any?
+          redirect_to pin_path
+        else
+          @user.phone = nil
+          flash[:error] = "Something is wrong with your phone number"
+          render :new
+        end
+      end
     else
       render :new
     end
@@ -26,13 +38,28 @@ class UsersController < ApplicationController
   end
 
   def  update
-  if @user.update user_params
-    flash[:notice] = "Your profile was successfully updated"
-    redirect_to user_path(@user)
-  else
-    render :edit
+    if @user.update user_params
+
+      if @user.phone.blank?
+        redirect_to user_path(@user), notice: "Your profile was successfully updated"
+      else
+        session[:two_factor] = true
+        @user.generate_pin!
+        errors = @user.send_pin_to_phone
+        if !errors.any?
+          redirect_to pin_path
+        else
+          @user.phone = nil
+          flash[:error] = "Something is wrong with your phone number"
+          render :edit
+        end
+      end
+
+    else
+      render :edit
+    end
+
   end
-end
 
   def destroy
 
@@ -50,8 +77,7 @@ private
 
   def require_same_user
     if current_user != @user
-      flash[:error] = "Access denied for user #{current_user.username}"
-      redirect_to root_path
+      redirect_to root_path ,alert:  "Access denied for user #{current_user.username}"
     end
   end
 
