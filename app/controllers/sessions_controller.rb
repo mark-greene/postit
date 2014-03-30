@@ -11,7 +11,7 @@ class SessionsController < ApplicationController
       if user.two_factor_auth?
         session[:two_factor] = true
         user.generate_pin!
-        errors = user.send_pin_to_phone
+        errors = user.send_msg_to_phone "Please enter #{user.pin} to login."
         if errors.any?
           redirect_to login_path, alert: "Something is wrong with your phone number. Your pin was not sent."
         else

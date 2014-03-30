@@ -17,8 +17,10 @@ class UsersController < ApplicationController
 
       if @user.phone.blank?
         redirect_to root_path, notice: "Welcome #{@user.username}, you are registered"
+      elsif valid_phone?
+        redirect_to root_path, notice: "Welcome #{@user.username}, a text has been sent to your phone</br> &nbsp;&nbsp;&nbsp; * Please verify you received the text before logging out".html_safe
       else
-        render :new if !valid_phone?
+        render :new
       end
 
     else
@@ -34,9 +36,11 @@ class UsersController < ApplicationController
     if @user.update user_params
 
       if @user.phone.blank?
-        redirect_to user_path(@user), notice: "Your profile was successfully updated"
+        redirect_to user_path(@user), notice: "#{@user.username}, your profile was successfully updated"
+      elsif valid_phone?
+        redirect_to user_path(@user), notice: "#{@user.username}, a text has been sent to your phone</br>&nbsp;&nbsp;&nbsp; * Please verify you received the text before logging out".html_safe
       else
-        render :edit if !valid_phone?
+        render :edit
       end
 
     else
@@ -45,9 +49,6 @@ class UsersController < ApplicationController
 
   end
 
-  def destroy
-
-  end
 
 private
 
@@ -66,19 +67,12 @@ private
   end
 
   def valid_phone?
-    valid = true
-    session[:two_factor] = true
-    @user.generate_pin!
-    errors = @user.send_pin_to_phone
-    if !errors.any?
-      redirect_to pin_path
-    else
-      valid = false
-      @user.remove_pin!
+    errors = @user.send_msg_to_phone "Hello #{@user.username}, if you received this text your phone number is verified."
+    if errors.any?
       @user.phone = nil
       flash[:error] = "Something is wrong with your phone number"
     end
-    valid
+    !errors.any?
   end
 
 end
