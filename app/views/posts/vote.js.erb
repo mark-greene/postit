@@ -1,5 +1,9 @@
 <% if @vote.valid? %>
-  $("#post_<%= @post.to_param%>_votes").html("<%= @post.total_votes %> votes")
+  $("#post_<%= @post.to_param%>_votes").html("<%= pluralize(@post.total_votes, 'vote') %>")
 <% else %>
-  alert("You can only vote once")
+  var alert =
+    "<div class='alert alert-error'> You can only vote once \
+    <a class='close' data-dismiss='alert'>&#215;</a> \
+    </div>"
+  $("#post_<%= @post.to_param%>_votes").parent().before(alert)
 <% end %>
