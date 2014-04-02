@@ -31,4 +31,7 @@
 <% end %>
 
 <h4> Comments: </h4>
-<%= render @post.comments.all.sort_by{|x| x.total_votes}.reverse %>
+<% comments = @post.comments.paginate(page: params[:page], per_page: 5, order: 'total_votes DESC') %>
+<%= will_paginate comments %>
+<%= render comments %>
+<%= will_paginate comments %>

@@ -4,7 +4,7 @@ class PostsController < ApplicationController
   before_action :require_creator, only: [:edit, :update]
 
   def index
-    @posts = Post.all.sort_by{|x| x.total_votes}.reverse
+    @posts = Post.paginate(page: params[:page], per_page: 5, order: 'total_votes DESC')
 
     respond_to do |format|
       format.html
@@ -34,6 +34,7 @@ class PostsController < ApplicationController
 
     if @post.save
       flash[:notice] = "Your post was successfully created"
+      @post.save_total_votes
       redirect_to posts_path
     else
       render :new
@@ -54,6 +55,9 @@ class PostsController < ApplicationController
 
   def vote
     @vote = Vote.create(voteable: @post, creator: current_user, vote: params[:vote])
+     if @vote.valid?
+        @post.save_total_votes
+     end
 
     respond_to do |format|
       format.html do

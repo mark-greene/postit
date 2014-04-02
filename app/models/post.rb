@@ -12,4 +12,9 @@ class Post < ActiveRecord::Base
   validates :description, presence: true
 
   sluggable_column :title
+
+  def save_total_votes
+    self.update_column(:total_votes, self.total_votes)
+  end
+
 end

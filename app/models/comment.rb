@@ -6,4 +6,8 @@ class Comment < ActiveRecord::Base
 
   validates :body, presence: true
 
+  def save_total_votes
+    self.update_column(:total_votes, self.total_votes)
+  end
+
 end

@@ -25,13 +25,17 @@
 </ul>
 
 <% if params[:tab].nil? %>
-  <% posts = @user.posts.all.sort_by{|x| x.total_votes}.reverse %>
+  <% posts = @user.posts.paginate(page: params[:page], per_page: 5, order: 'total_votes DESC') %>
+  <%= will_paginate posts %>
   <% posts.each do |post| %>
     <%= render 'posts/post', post: post %>
   <% end %>
+  <%= will_paginate posts%>
 <% else %>
-  <% comments = @user.comments.all.sort_by{|x| x.total_votes}.reverse %>
+  <% comments = @user.comments.paginate(page: params[:page], per_page: 5, order: 'total_votes DESC') %>
+  <%= will_paginate comments%>
   <% comments.each do |comment| %>
     <%= render 'comments/comment', comment: comment, show_post: true %>
   <% end %>
+  <%= will_paginate comments%>
 <% end %>
