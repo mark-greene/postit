@@ -23,3 +23,10 @@ $(document).ready(function() {
     trigger: 'hover'
   })
 })
+
+function alert_error(msg)
+{
+  return  "<div class='alert alert-error'> " + msg
+            + "<a class='close' data-dismiss='alert'>&#215;</a>"
+            + "</div>"
+}
